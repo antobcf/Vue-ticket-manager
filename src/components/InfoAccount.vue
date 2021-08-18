@@ -1,0 +1,281 @@
+<template>
+    <div>
+        <div class="user-info">
+            <h3>Account info</h3>
+            <p>Username: {{username}}</p>
+            <p>Email: {{email}}</p>
+            <p>First name: {{firstname}}</p>
+            <p>Last name: {{lastname}}</p>
+            <p>Role: {{role}}</p>
+            <button @click="logout">Logout</button>
+        </div>
+
+        <div v-if="role == 'admin'" id="buttons">
+            <button @click="showListUsers">List users</button><br>
+            <button @click="showListAssets">Assets</button>
+        </div>
+
+        <button @click="showForm">{{buttonText}}</button>
+        <div id="formTicket" style="display: none;">
+            <form @submit.prevent="postData" method="post" id="newTicket">
+                <div class="form-group">
+                    <input type="date" name="openDate" v-model="myDate" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <textarea name="description" v-model="newDescription" cols="30" rows="5" class="form-control" placeholder="Description of the problem..."></textarea>
+                    <span v-if="!$v.newDescription.required && $v.newDescription.$dirty" class="text-danger">Description is required!</span>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="status" v-model="newStatus" class="form-controll" style="display:none">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="username" v-model="username" class="form-controll" readonly>
+                </div>
+                <div class="form-group">
+                    <select v-model="selected.asset" name="asset" class="form-control">
+                        <option value="" disabled selected>Select asset</option>
+                        <option v-for="asset in assets" v-bind:key="asset.asset_id">
+                            {{asset.id}}
+                        </option>
+                    </select>
+                    <span v-if="!$v.selected.asset.required && $v.selected.asset.$dirty" class="text-danger">Asset is required!</span>
+                </div>
+                <button type="submit">Confirm</button>
+            </form>
+        </div>
+
+        <div class="tickets">
+            <ul style="list-style-type:none;" >
+                <li v-for="(ticket, index) in tickets" v-bind:key="ticket.ticket_id">
+                ID: {{ticket.ticket_id}} - {{ticket.openDate | formatDate }} - Asset: {{ticket.asset_id}} - {{ticket.description}} - Status: {{ticket.status}} - 
+                
+                <div v-if="role == 'admin' && ticket.status=='pending confirmation' && ticket.maintainer == null" id="chooseMaintainer">
+                    <select v-model="selected[index]" name="maintainer" class="form-control" id="selectMaintainer">
+                        <option value="" disabled selected>Select maintainer</option>
+                        <option v-for="maintainer in maintainers" v-bind:key="maintainer.username">{{maintainer.username}}</option>
+                    </select>
+                </div>
+                <div v-else id="showMaintainer">
+                    Maintainer: 
+                        <div v-if="ticket.maintainer == null" class="main">to be defined</div>
+                        <div v-else class="main">{{ticket.maintainer}} - {{ticket.mainEmail}}</div> 
+                </div>
+                <!-- <div v-if="maintainers[index] == null" id="errorMain"><b>Choose a maintainer</b></div> -->
+
+                <div v-if="role == 'admin' && ticket.status == 'pending confirmation'" id="confirmButton"><button type="submit" @click="editTicket(index)">{{confirmButton}}</button></div>
+                <div v-if="role == 'admin' && ticket.status != 'work done'" id="deleteButton"><button @click="deleteTicket(index)">Reject ticket</button></div>
+                <div v-if="role == 'maintainer' && (ticket.status == 'assigned' || ticket.status == 'work in progress')" id="accepetWork"><button @click="editTicketMain(index)">Next phase status</button></div>
+                <div v-if="role == 'admin' && ticket.status =='work done'" id="closeStatus"><button @click="closeButton(index)">Close ticket</button></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
+
+<script>
+import Vue from 'vue'   
+import axios from 'axios'
+import VueAxios from 'vue-axios' 
+import Vuelidate from 'vuelidate'
+import {required} from 'vuelidate/lib/validators'
+
+Vue.use(VueAxios, axios)
+Vue.use(Vuelidate)
+
+export default {
+    name: "InfoAccount",
+    
+    data() {
+        return {
+            //user: {
+                username: '',
+                password:'',
+                firstname:'',
+                lastname:'',
+                email:'',
+                role:'',
+                userEmail:'',
+                emailMaintainer: '',
+            //}
+                tickets: [],
+                myDate : new Date().toISOString().slice(0,10),
+                buttonText: 'Create new ticket',
+                confirmButton: 'Accept ticket',
+                newStatus: 'pending confirmation',
+                newDescription: '',
+
+                assets: [],
+                maintainers: [],
+                selected: {
+                    asset: '',
+                    maintainer: ''
+                },
+                buttonView: '',
+                maintainerButton: 'Accept work',
+                inputM: []
+        }
+    },
+    validations: {
+        selected: {
+            asset: {required},
+            maintainer: {required},
+            selected: {required}
+        },
+        newDescription: {required}
+    },
+    mounted() {
+        this.getData(),
+        this.getAssets(),
+        this.getMaintainers()
+    },
+    methods: {
+        getData() {
+            axios.get("http://localhost:8081/user/"+this.$route.params.username)
+            .then((response) => {
+                this.username = response.data.username
+                this.firstname = response.data.firstname
+                this.lastname = response.data.lastname
+                this.email = response.data.email
+                this.role = response.data.role
+                this.userEmail = response.data.userEmail
+                this.mainEmail = response.data.mainEmail
+
+                this.showTickets(this.role) 
+            })
+        },
+        getAssets() {
+            axios.get("http://localhost:8082/asset/")
+            .then((response) => {
+                this.assets = response.data
+            })
+        },
+        getMaintainers() {
+            axios.get("http://localhost:8081/user/role/maintainer")
+            .then((response) => {
+                this.maintainers = response.data
+            })
+        },
+        showListUsers() {
+            this.$router.push({path: '/listusers/'})
+        },
+        showListAssets() {
+            this.$router.push({path: '/listassets'})
+        },
+        logout() {
+            this.$router.push({path: '/'})
+        },
+        showTickets(role) {
+            if(role == "admin") {
+                axios.get("http://localhost:8083/ticket/admin")
+                .then((response) => {
+                    this.tickets = response.data
+                })
+            } else if(role == "employee") {
+                axios.get("http://localhost:8083/ticket/employee/"+this.username)
+                .then((response) => {
+                    this.tickets = response.data
+                })
+            } else {
+                axios.get("http://localhost:8083/ticket/maintainer/"+this.username)
+                .then((response) => {
+                    this.tickets = response.data
+                })
+            }
+        },
+        deleteTicket(index) {
+            axios.post("http://localhost:8083/ticket/email/rejected/"+this.tickets[index].ticket_id)
+            axios.delete("http://localhost:8083/ticket/delete/"+this.tickets[index].ticket_id)
+            this.$delete(this.tickets, index)
+            
+        },
+        editTicket(index) {
+            // this.$v.$touch();
+            if(this.selected[index] == null) {
+                // document.getElementById("errorMain").style.display = "block"
+                console.log("choose maintainer")
+            } else {
+                if(this.tickets[index].status == "pending confirmation") {
+                    this.tickets[index].status = "assigned"
+                    axios.get("http://localhost:8081/user/"+this.selected[index])
+                    .then((response) => {
+                        this.emailMaintainer = response.data.email
+                        axios.put("http://localhost:8083/ticket/update/"+this.tickets[index].ticket_id, {status: this.tickets[index].status, maintainer: this.selected[index], mainEmail: this.emailMaintainer})
+                        axios.post("http://localhost:8083/ticket/email/approved/"+this.tickets[index].ticket_id)
+                        axios.post("http://localhost:8083/ticket/email/assigned/"+this.emailMaintainer)
+                        axios.put("http://localhost:8082/asset/update/"+this.tickets[index].asset_id, {status: "out of service"})
+                    })
+                    this.getData()
+                    this.getData()
+                    
+                } 
+            }
+        },
+        editTicketMain(index) {
+            if(this.tickets[index].status == "assigned") {
+                this.tickets[index].status = "work in progress"
+                axios.put("http://localhost:8083/ticket/update/"+this.tickets[index].ticket_id, {status: this.tickets[index].status})
+                this.maintainerButton = "Work finished"
+            } else if(this.tickets[index].status == "work in progress") {
+                    this.tickets[index].status = "work done"
+                    axios.put("http://localhost:8083/ticket/update/"+this.tickets[index].ticket_id, {status: this.tickets[index].status})
+                    
+                    //document.getElementById("confirmButton").style.display = "block"
+                    
+                    this.getData();
+            }
+        },
+        closeButton(index) {
+            this.tickets[index].status = "closed"
+            axios.put("http://localhost:8083/ticket/update/"+this.tickets[index].ticket_id, {status: this.tickets[index].status})
+            axios.put("http://localhost:8082/asset/update/"+this.tickets[index].asset_id, {status: "operating"})
+            this.getData();
+            axios.post("http://localhost:8083/ticket/email/closed/"+this.tickets[index].ticket_id)
+        },
+        showForm() {
+            var x = document.getElementById("formTicket")
+            if(x.style.display == "none") {
+                x.style.display = "block"
+                this.buttonText = "Close"
+            } else {
+                x.style.display = "none"
+                this.buttonText = "Create new ticket"
+            }
+        },
+        postData() {
+            this.$v.$touch();
+            if(this.selected.asset && this.newDescription) {
+                axios.post("http://localhost:8083/ticket/new", {description: this.newDescription, openDate: this.myDate, status: this.newStatus, username: this.username, asset_id: this.selected.asset, userEmail: this.email},{headers:{'Content-Type' : 'application/json;charset=utf-8'}})
+                var x = document.getElementById("formTicket")
+                x.style.display = "none"  
+                this.buttonText = "Create new ticket"
+
+                this.newDescription = ''
+                this.selected.asset = ''
+                this.$v.$reset();
+
+                this.getData()
+                axios.post("http://localhost:8083/ticket/email/newTicket/"+this.email)
+            }
+        }
+    }
+}
+</script>
+
+<style>
+#maintainerShow {
+    display: inline-block;
+}
+
+#showMaintainer {
+    display: inline-table;
+}
+
+.main {
+    display: inline-table;
+}
+
+#errorMain {
+    display: none;
+}
+
+</style>
