@@ -254,6 +254,7 @@ export default {
                 this.$v.$reset();
 
                 this.getData()
+                this.getData()
                 axios.post("http://localhost:8083/ticket/email/newTicket/"+this.email)
             }
         }

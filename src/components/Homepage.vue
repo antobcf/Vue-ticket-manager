@@ -42,15 +42,16 @@ export default {
     methods:{
         checkCredentials(){
             this.$v.$touch();
-            if(this.username && this.password) {
-                axios.get("http://localhost:8081/user/"+this.username)
-                .then((response) => {
-                    this.credentials=response.data
-                    if(this.password == this.credentials.password) {
-                        this.$router.push('/account/'+this.username)
-                    }
-                })                
-            }
+            axios.post("http://localhost:8081/user/log")
+            // if(this.username && this.password) {
+            //     axios.get("http://localhost:8081/user/"+this.username)
+            //     .then((response) => {
+            //         this.credentials=response.data
+            //         if(this.password == this.credentials.password) {
+            //             this.$router.push('/account/'+this.username)
+            //         }
+            //     })                
+            // }
         }
     }
 
