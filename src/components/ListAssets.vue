@@ -27,7 +27,6 @@
             <ul style="list-style-type:none;" >
                 <li v-for="(asset, index) in assets" v-bind:key="asset.asset_id">
                 {{asset.id}} - {{asset.name}} - Status: {{asset.status}}
-                <!-- <button @click="editAsset(index)">Change status</button> -->
                 <button @click="deleteAsset(index)">Delete asset</button>
                 </li>
             </ul>
@@ -114,12 +113,8 @@ export default {
 </script>
 
 <style>
-
-
 #assetsList {
   overflow: scroll;
   height: 50vh;
 }
-
-
 </style>

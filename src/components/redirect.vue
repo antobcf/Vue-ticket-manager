@@ -17,16 +17,15 @@ export default {
     },
     methods: {
         countDownTimer() {
-                if(this.countdown > 0) {
-                    setTimeout(() => {
-                        this.countdown -= 1
-                        this.countDownTimer()
-                    }, 1000)
-                } else {
-                    this.$router.push({ path: '/'});
-                }
-                
+            if(this.countdown > 0) {
+                setTimeout(() => {
+                    this.countdown -= 1
+                    this.countDownTimer()
+                }, 1000)
+            } else {
+                this.$router.push({ path: '/'});
             }
+        }
     }
 }
 </script>

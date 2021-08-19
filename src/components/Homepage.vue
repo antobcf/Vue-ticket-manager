@@ -23,6 +23,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'   
 import Vuelidate from 'vuelidate'
 import {required} from 'vuelidate/lib/validators'
+
 Vue.use(Vuelidate)
 Vue.use(VueAxios, axios)
 
@@ -42,7 +43,7 @@ export default {
     methods:{
         checkCredentials(){
             this.$v.$touch();
-            axios.post("http://localhost:8081/user/log")
+            // axios.post("http://localhost:8081/user/log")
             // if(this.username && this.password) {
             //     axios.get("http://localhost:8081/user/"+this.username)
             //     .then((response) => {
@@ -54,7 +55,5 @@ export default {
             // }
         }
     }
-
-    
 }
 </script>

@@ -60,7 +60,6 @@
                         <div v-if="ticket.maintainer == null" class="main">to be defined</div>
                         <div v-else class="main">{{ticket.maintainer}} - {{ticket.mainEmail}}</div> 
                 </div>
-                <!-- <div v-if="maintainers[index] == null" id="errorMain"><b>Choose a maintainer</b></div> -->
 
                 <div v-if="role == 'admin' && ticket.status == 'pending confirmation'" id="confirmButton"><button type="submit" @click="editTicket(index)">{{confirmButton}}</button></div>
                 <div v-if="role == 'admin' && ticket.status != 'work done'" id="deleteButton"><button @click="deleteTicket(index)">Reject ticket</button></div>
@@ -84,35 +83,31 @@ Vue.use(Vuelidate)
 
 export default {
     name: "InfoAccount",
-    
     data() {
         return {
-            //user: {
-                username: '',
-                password:'',
-                firstname:'',
-                lastname:'',
-                email:'',
-                role:'',
-                userEmail:'',
-                emailMaintainer: '',
-            //}
-                tickets: [],
-                myDate : new Date().toISOString().slice(0,10),
-                buttonText: 'Create new ticket',
-                confirmButton: 'Accept ticket',
-                newStatus: 'pending confirmation',
-                newDescription: '',
-
-                assets: [],
-                maintainers: [],
-                selected: {
-                    asset: '',
-                    maintainer: ''
-                },
-                buttonView: '',
-                maintainerButton: 'Accept work',
-                inputM: []
+            username: '',
+            password:'',
+            firstname:'',
+            lastname:'',
+            email:'',
+            role:'',
+            userEmail:'',
+            emailMaintainer: '',
+            tickets: [],
+            myDate : new Date().toISOString().slice(0,10),
+            buttonText: 'Create new ticket',
+            confirmButton: 'Accept ticket',
+            newStatus: 'pending confirmation',
+            newDescription: '',
+            assets: [],
+            maintainers: [],
+            selected: {
+                asset: '',
+                maintainer: ''
+            },
+            buttonView: '',
+            maintainerButton: 'Accept work',
+            inputM: []
         }
     },
     validations: {
@@ -186,12 +181,10 @@ export default {
             axios.post("http://localhost:8083/ticket/email/rejected/"+this.tickets[index].ticket_id)
             axios.delete("http://localhost:8083/ticket/delete/"+this.tickets[index].ticket_id)
             this.$delete(this.tickets, index)
-            
         },
         editTicket(index) {
             // this.$v.$touch();
             if(this.selected[index] == null) {
-                // document.getElementById("errorMain").style.display = "block"
                 console.log("choose maintainer")
             } else {
                 if(this.tickets[index].status == "pending confirmation") {
@@ -206,7 +199,6 @@ export default {
                     })
                     this.getData()
                     this.getData()
-                    
                 } 
             }
         },
@@ -218,8 +210,6 @@ export default {
             } else if(this.tickets[index].status == "work in progress") {
                     this.tickets[index].status = "work done"
                     axios.put("http://localhost:8083/ticket/update/"+this.tickets[index].ticket_id, {status: this.tickets[index].status})
-                    
-                    //document.getElementById("confirmButton").style.display = "block"
                     
                     this.getData();
             }
@@ -274,9 +264,4 @@ export default {
 .main {
     display: inline-table;
 }
-
-#errorMain {
-    display: none;
-}
-
 </style>

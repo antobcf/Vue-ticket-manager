@@ -30,14 +30,10 @@
                 </select>
                 <span v-if="!$v.role.required && $v.role.$dirty" class="text-danger">Role is required!</span><br><br>
             </div>
-            
-            
             <button type="submit">Sign Up</button><br>
             
             <router-link to="/" tag="button">Back</router-link>
         </form>    
-
-
     </div>
 </template>
 
@@ -55,14 +51,12 @@ export default {
     name: "RegistrationForm",
     data() {
         return {   
-            
-                username:'',
-                password:'',
-                firstname:'',
-                lastname:'',
-                email:'',
-                role:''
-            
+            username:'',
+            password:'',
+            firstname:'',
+            lastname:'',
+            email:'',
+            role:''
         }        
     },
     validations: {
@@ -86,7 +80,6 @@ export default {
                 this.$router.push('/redirecting')
             }
         },
-        
     }
 }
 </script>
