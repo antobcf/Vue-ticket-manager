@@ -22,5 +22,4 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-/* @import url("https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"); */
 </style>

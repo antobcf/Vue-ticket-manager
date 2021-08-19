@@ -71,7 +71,7 @@ export default {
         postData() {
             this.$v.$touch();
             if(this.username && this.password && this.firstname && this.lastname && this.email && this.role) {
-                axios.post("http://localhost:8081/user/register", { username: this.username, password: this.password, firstname: this.firstname, lastname: this.lastname, email: this.email, role: this.role} , {headers:{'Content-Type' : 'application/json;charset=utf-8'}})
+                axios.post("http://localhost:8081/register", { username: this.username, password: this.password, firstname: this.firstname, lastname: this.lastname, email: this.email, role: this.role} , {headers:{'Content-Type' : 'application/json;charset=utf-8'}})
                 .then( response => {
                     console.log(response.data)
                 })

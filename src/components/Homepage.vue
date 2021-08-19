@@ -43,8 +43,14 @@ export default {
     methods:{
         checkCredentials(){
             this.$v.$touch();
-            // axios.post("http://localhost:8081/user/log")
-            // if(this.username && this.password) {
+            
+            axios.post("http://localhost:8081/user/authenticate",{username: this.username, password: this.password})
+            .then((response) => {
+                if(response.data) {
+                    this.$router.push('/account/'+this.username)
+                }
+            })
+          // if(this.username && this.password) {
             //     axios.get("http://localhost:8081/user/"+this.username)
             //     .then((response) => {
             //         this.credentials=response.data
