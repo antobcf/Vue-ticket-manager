@@ -47,6 +47,7 @@ export default {
             axios.post("http://localhost:8081/user/authenticate",{username: this.username, password: this.password})
             .then((response) => {
                 if(response.data) {
+                    console.log(response.data)
                     this.$router.push('/account/'+this.username)
                 }
             })

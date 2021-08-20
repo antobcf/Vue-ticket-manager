@@ -125,7 +125,7 @@ export default {
     },
     methods: {
         getData() {
-            axios.get("http://localhost:8081/user/"+this.$route.params.username)
+            axios.get("http://localhost:8081/user/"+this.$route.params.username, {headers: {Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpbyIsImV4cCI6MTYyOTQ5OTY0OCwiaWF0IjoxNjI5NDYzNjQ4fQ.yEF6uAR5ObFnm4Akbr4jvBzMCTNvehArU7ybRtf5W-0"}})
             .then((response) => {
                 this.username = response.data.username
                 this.firstname = response.data.firstname
