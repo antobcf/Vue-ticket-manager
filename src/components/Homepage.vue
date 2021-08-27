@@ -44,22 +44,22 @@ export default {
         checkCredentials(){
             this.$v.$touch();
             
-            axios.post("http://localhost:8081/user/authenticate",{username: this.username, password: this.password})
-            .then((response) => {
-                if(response.data) {
-                    console.log(response.data)
-                    this.$router.push('/account/'+this.username)
-                }
-            })
-          // if(this.username && this.password) {
-            //     axios.get("http://localhost:8081/user/"+this.username)
-            //     .then((response) => {
-            //         this.credentials=response.data
-            //         if(this.password == this.credentials.password) {
-            //             this.$router.push('/account/'+this.username)
-            //         }
-            //     })                
-            // }
+            // axios.post("http://localhost:8081/user/authenticate",{username: this.username, password: this.password})
+            // .then((response) => {
+            //     if(response.data) {
+            //         console.log(response.data)
+            //         this.$router.push('/account/'+this.username)
+            //     }
+            // })
+          if(this.username && this.password) {
+                axios.get("http://localhost:8081/user/"+this.username)
+                .then((response) => {
+                    this.credentials=response.data
+                    if(this.password == this.credentials.password) {
+                        this.$router.push('/account/'+this.username)
+                    }
+                })                
+            }
         }
     }
 }
