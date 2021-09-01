@@ -1,21 +1,38 @@
 <template>
     <div>
         <div class="user-info">
-            <h3>Account info</h3>
-            <p>Username: {{username}}</p>
-            <p>Email: {{email}}</p>
-            <p>First name: {{firstname}}</p>
-            <p>Last name: {{lastname}}</p>
-            <p>Role: {{role}}</p>
-            <button @click="logout">Logout</button>
+            <div class="title"><h3>Account info</h3></div>
+            <table class="info-table">
+                <tr>
+                    <td class="line">Username</td>
+                    <td class="line2">{{username}}</td>
+                </tr>
+                <tr>
+                    <td class="line">Email</td>
+                    <td class="line2">{{email}}</td>
+                </tr>
+                <tr>
+                    <td class="line">First name</td>
+                    <td class="line2">{{firstname}}</td>
+                </tr>
+                <tr>
+                    <td class="line">Last name</td>
+                    <td class="line2">{{lastname}}</td>
+                </tr>
+                <tr>
+                    <td class="line">Role</td>
+                    <td class="line2">{{role}}</td>
+                </tr>
+            </table>
+            
+            
         </div>
 
         <div v-if="role == 'admin'" id="buttons">
-            <button @click="showListUsers">List users</button><br>
-            <button @click="showListAssets">Assets</button>
+            <button @click="showListUsers" class="users">List users</button>
+            <button @click="showListAssets" class="assets">Assets</button>
         </div>
-
-        <button @click="showForm">{{buttonText}}</button>
+        <button @click="showForm" class="new">{{buttonText}}</button>
         <div id="formTicket" style="display: none;">
             <form @submit.prevent="postData" method="post" id="newTicket">
                 <div class="form-group">
@@ -67,6 +84,8 @@
                 <div v-if="role == 'admin' && ticket.status =='work done'" id="closeStatus"><button @click="closeButton(index)">Close ticket</button></div>
                 </li>
             </ul>
+
+            <button @click="logout" class="logout">Logout</button>
         </div>
     </div>
 </template>
