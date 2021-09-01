@@ -3,36 +3,37 @@
         <h3>Registration</h3>
         <form @submit.prevent="postData" method="post">
             <div class="form-group">
-                <input type="text" name="username" placeholder="username" v-model="username"  class="form-control">
-                <span v-if="!$v.username.required && $v.username.$dirty" class="text-danger">Username is required!</span><br><br>
+                <input id="space" type="text" name="username" placeholder="Username" v-model="username"  class="form-control">
+                <span v-if="!$v.username.required && $v.username.$dirty" class="text-danger">Username is required!</span>
             </div>
             <div class="form-group">
-                <input type="password" name="password" placeholder="password" v-model="password" class="form-control">
-                <span v-if="!$v.password.required && $v.password.$dirty" class="text-danger">Password is required!</span><br><br>
+                <input id="space" type="password" name="password" placeholder="Password" v-model="password" class="form-control">
+                <span v-if="!$v.password.required && $v.password.$dirty" class="text-danger">Password is required!</span>
             </div>
             <div class="form-group">
-                <input type="text" name="firstname" placeholder="firstname" v-model="firstname" class="form-control">
-                <span v-if="!$v.firstname.required && $v.firstname.$dirty" class="text-danger">Firstname is required!</span><br><br>
+                <input id="space" type="text" name="firstname" placeholder="First name" v-model="firstname" class="form-control">
+                <span v-if="!$v.firstname.required && $v.firstname.$dirty" class="text-danger">Firstname is required!</span>
             </div>
             <div class="form-group">
-                <input type="text" name="lastname" placeholder="lastname" v-model="lastname" class="form-control">
-                <span v-if="!$v.lastname.required && $v.lastname.$dirty" class="text-danger">Lastname is required!</span><br><br>
+                <input id="space" type="text" name="lastname" placeholder="Last name" v-model="lastname" class="form-control">
+                <span v-if="!$v.lastname.required && $v.lastname.$dirty" class="text-danger">Lastname is required!</span>
             </div>
             <div class="form-group">
-                <input type="email" name="email" placeholder="email" v-model="email" class="form-control">
-                <span v-if="(!$v.email.required || !$v.email.email) && $v.email.$dirty" class="text-danger">Valid email is required!</span><br><br>
+                <input id="space" type="email" name="email" placeholder="E-mail" v-model="email" class="form-control">
+                <span v-if="(!$v.email.required || !$v.email.email) && $v.email.$dirty" class="text-danger">Valid email is required!</span>
             </div>
             <div class="form-group">
-                <select v-model="role" class="form-control">
+                <select v-model="role" class="selection" id="space">
+                    <option value="" disabled>Select</option>
                     <option value="employee">Employee</option>
                     <option value="admin">Administrator</option>
                     <option value="maintainer">Maintainer</option>
                 </select>
-                <span v-if="!$v.role.required && $v.role.$dirty" class="text-danger">Role is required!</span><br><br>
+                <span v-if="!$v.role.required && $v.role.$dirty" class="text-danger">Role is required!</span>
             </div>
-            <button type="submit">Sign Up</button><br>
+            <button type="submit" class="login">Sign Up</button>
             
-            <router-link to="/" tag="button">Back</router-link>
+            <router-link to="/" tag="button" class="signup">Back</router-link>
         </form>    
     </div>
 </template>
@@ -43,6 +44,8 @@ import axios from 'axios'
 import VueAxios from 'vue-axios' 
 import Vuelidate from 'vuelidate'
 import {email, required} from 'vuelidate/lib/validators'
+
+import '../assets/style/components/RegistrationForm.css'
 
 Vue.use(VueAxios, axios)
 Vue.use(Vuelidate)

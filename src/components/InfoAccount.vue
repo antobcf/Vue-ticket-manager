@@ -78,6 +78,8 @@ import VueAxios from 'vue-axios'
 import Vuelidate from 'vuelidate'
 import {required} from 'vuelidate/lib/validators'
 
+import '../assets/style/components/InfoAccount.css'
+
 Vue.use(VueAxios, axios)
 Vue.use(Vuelidate)
 

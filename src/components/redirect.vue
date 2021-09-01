@@ -1,15 +1,17 @@
 <template>
-    <div>
-        Congratulations. Registration done! <br>
+    <div id="congrats">
+        Congratulations. Registration was successful! <br>
         You will be redirect to the homepage in {{countdown}} seconds or click <a href="/">here.</a>
     </div>
 </template>
 
 <script>
+import '../assets/style/components/redirect.css'
+
 export default {
     data() {
         return {
-            countdown: 5
+            countdown: 10
         }
     },
     created() {
