@@ -1,0 +1,25 @@
+#title-user {
+    text-align: center;
+}
+
+#user-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    border: 2px solid var(--main-color-9);
+    text-align: center;
+}
+
+#delete-button {
+    border-radius: 0;
+    background-color: #f55656;
+}
+
+#user-table th,td {
+    padding: 5px 5px;
+}
+
+#back-button {
+    margin-top: 10px;
+    width: 65px;
+    font-size: 18px;
+}

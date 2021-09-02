@@ -1,36 +1,42 @@
 <template>
     <div>
         <div>
-            <button @click="backButton">Back</button>
-            <button @click="openAssetForm">{{buttonText}}</button>
+            <button @click="openAssetForm" id="new-asset">{{buttonText}}</button>
             <div id="formAsset" style="display: none;">
                 <form @submit.prevent="postData" method="post" id="newAsset">
                     <div class="form-group">
-                        <br>
-                        <input type="text" name="name" placeholder="Name asset" v-model="newName" class="form-control">
-                        <span v-if="!$v.newName.required && $v.newName.$dirty" class="text-danger">Name asset is required!</span><br>
+                        <input id="name-asset" type="text" name="name" placeholder="Name asset" v-model="newName" class="form-control"><br>
+                        <span v-if="!$v.newName.required && $v.newName.$dirty" class="text-danger">Name asset is required!</span>
                     </div>
                     <div class="form-group">
-                        <select v-model="newStatus" class="form-control">
+                        <select id="select-status" v-model="newStatus" class="form-control">
                             <option value="" disabled selected>Select status</option>
-                            <option value="operative">Operative</option>
-                            <option value="notOperative">Out of order</option>
-                        </select>
-                        <span v-if="!$v.newStatus.required && $v.newStatus.$dirty" class="text-danger">Status asset is required!</span><br>
+                            <option value="operating">Operative</option>
+                            <option value="out of service">Out of service</option>
+                        </select><br>
+                        <span v-if="!$v.newStatus.required && $v.newStatus.$dirty" class="text-danger">Status asset is required!</span>
                     </div>
-                    <button type="submit">Confirm</button><br>
+                    <button id="confirm-asset" type="submit">Confirm</button>
                 </form>
             </div>
         </div>
 
         <div id="assetsList">
-            <ul style="list-style-type:none;" >
-                <li v-for="(asset, index) in assets" v-bind:key="asset.asset_id">
-                {{asset.id}} - {{asset.name}} - Status: {{asset.status}}
-                <button @click="deleteAsset(index)">Delete asset</button>
-                </li>
-            </ul>
+            <table id="table-assets">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+                <tr v-for="(asset, index) in assets" v-bind:key="asset.asset_id">
+                    <td>{{asset.id}}</td>
+                    <td>{{asset.name}}</td>
+                    <td>{{asset.status}}</td>
+                    <td><button id="delete-asset" @click="deleteAsset(index)">Delete asset</button></td>
+                </tr>
+            </table>
         </div>
+        <button id="back-asset" @click="backButton">Back</button>
     </div>
 </template>
 
@@ -40,6 +46,8 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'  
 import Vuelidate from 'vuelidate'
 import {required} from 'vuelidate/lib/validators'
+
+import '../assets/style/components/ListAssets.css'
 
 Vue.use(VueAxios, axios)
 Vue.use(Vuelidate)
@@ -102,6 +110,7 @@ export default {
 
                 this.newName = ''
                 this.newStatus = ''
+                this.buttonText = 'Create new asset'
                 this.$v.$reset();
             } 
         },
@@ -112,9 +121,3 @@ export default {
 }
 </script>
 
-<style>
-#assetsList {
-  overflow: scroll;
-  height: 50vh;
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Registration</h3>
+        <h3 id="registr">Registration</h3>
         <form @submit.prevent="postData" method="post">
             <div class="form-group">
                 <input id="space" type="text" name="username" placeholder="Username" v-model="username"  class="form-control">

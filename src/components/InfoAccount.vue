@@ -35,55 +35,79 @@
         <button @click="showForm" class="new">{{buttonText}}</button>
         <div id="formTicket" style="display: none;">
             <form @submit.prevent="postData" method="post" id="newTicket">
-                <div class="form-group">
-                    <input type="date" name="openDate" v-model="myDate" class="form-control" readonly>
+                <div id="left-area">
+                    <div class="form-group">
+                        <input id="date-input" type="date" name="openDate" v-model="myDate" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <input id="username-input" type="text" name="username" v-model="username" class="form-controll" readonly>
+                    </div>
+                    <div class="form-group">
+                        <select id="select" v-model="selected.asset" name="asset" class="form-control">
+                            <option value="" disabled selected>Select asset</option>
+                            <option v-for="asset in assets" v-bind:key="asset.asset_id">
+                                {{asset.id}}
+                            </option>
+                        </select><br>
+                        <span id="span-span" v-if="!$v.selected.asset.required && $v.selected.asset.$dirty" class="text-danger">Asset is required!</span>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <textarea name="description" v-model="newDescription" cols="30" rows="5" class="form-control" placeholder="Description of the problem..."></textarea>
+                    <textarea id="text-area" name="description" v-model="newDescription" cols="30" rows="5" class="form-control" placeholder="Description of the problem..."></textarea>
                     <span v-if="!$v.newDescription.required && $v.newDescription.$dirty" class="text-danger">Description is required!</span>
                 </div>
                 <div class="form-group">
                     <input type="text" name="status" v-model="newStatus" class="form-controll" style="display:none">
                 </div>
-                <div class="form-group">
-                    <input type="text" name="username" v-model="username" class="form-controll" readonly>
-                </div>
-                <div class="form-group">
-                    <select v-model="selected.asset" name="asset" class="form-control">
-                        <option value="" disabled selected>Select asset</option>
-                        <option v-for="asset in assets" v-bind:key="asset.asset_id">
-                            {{asset.id}}
-                        </option>
-                    </select>
-                    <span v-if="!$v.selected.asset.required && $v.selected.asset.$dirty" class="text-danger">Asset is required!</span>
-                </div>
-                <button type="submit">Confirm</button>
+                
+                
+                <button id="confim-button" type="submit">Confirm</button>
             </form>
         </div>
 
         <div class="tickets">
-            <ul style="list-style-type:none;" >
-                <li v-for="(ticket, index) in tickets" v-bind:key="ticket.ticket_id">
-                ID: {{ticket.ticket_id}} - {{ticket.openDate | formatDate }} - Asset: {{ticket.asset_id}} - {{ticket.description}} - Status: {{ticket.status}} - 
-                
-                <div v-if="role == 'admin' && ticket.status=='pending confirmation' && ticket.maintainer == null" id="chooseMaintainer">
-                    <select v-model="selected[index]" name="maintainer" class="form-control" id="selectMaintainer">
-                        <option value="" disabled selected>Select maintainer</option>
-                        <option v-for="maintainer in maintainers" v-bind:key="maintainer.username">{{maintainer.username}}</option>
-                    </select>
-                </div>
-                <div v-else id="showMaintainer">
-                    Maintainer: 
+            <table id="ticket-table">
+                <tr>
+                    <th class="th-space">ID</th>
+                    <th class="th-space">Date</th>
+                    <th class="th-space">Asset ID</th>
+                    <th class="th-space">Problem</th>
+                    <th class="th-space">Status</th>
+                    <th class="th-space">Maintainer</th>
+                    <th class="th-space">Email maintainer</th>
+                    <th></th>
+                </tr>
+                <tr v-for="(ticket, index) in tickets" v-bind:key="ticket.ticket_id">
+                    <td id="id-td">{{ticket.ticket_id}}</td>
+                    <td id="id-date">{{ticket.openDate | formatDate }}</td>
+                    <td id="id-asset">{{ticket.asset_id}}</td>
+                    <td id="id-desc">{{ticket.description}}</td>
+                    <td id="id-status">{{ticket.status}}</td>
+                    <td id="id-main">
+                        <div v-if="role == 'admin' && ticket.status=='pending confirmation' && ticket.maintainer == null" id="chooseMaintainer">
+                            <select v-model="selected[index]" name="maintainer" class="form-control" id="selectMaintainer">
+                                <option value="" disabled selected>Select maintainer</option>
+                                <option v-for="maintainer in maintainers" v-bind:key="maintainer.username">{{maintainer.username}}</option>
+                            </select>
+                        </div>
+                        <div v-else id="showMaintainer">
+                            <div v-if="ticket.maintainer == null" class="main">to be defined</div>
+                            <div v-else class="main">{{ticket.maintainer}}</div> 
+                        </div>
+                    </td>
+                    <td id="id-email">
                         <div v-if="ticket.maintainer == null" class="main">to be defined</div>
-                        <div v-else class="main">{{ticket.maintainer}} - {{ticket.mainEmail}}</div> 
-                </div>
-
-                <div v-if="role == 'admin' && ticket.status == 'pending confirmation'" id="confirmButton"><button type="submit" @click="editTicket(index)">{{confirmButton}}</button></div>
-                <div v-if="role == 'admin' && ticket.status != 'work done'" id="deleteButton"><button @click="deleteTicket(index)">Reject ticket</button></div>
-                <div v-if="role == 'maintainer' && (ticket.status == 'assigned' || ticket.status == 'work in progress')" id="accepetWork"><button @click="editTicketMain(index)">Next phase status</button></div>
-                <div v-if="role == 'admin' && ticket.status =='work done'" id="closeStatus"><button @click="closeButton(index)">Close ticket</button></div>
-                </li>
-            </ul>
+                        <div v-else class="main">{{ticket.mainEmail}}</div> 
+                    </td>
+                    <td>
+                        <div v-if="role == 'admin' && ticket.status == 'pending confirmation'" id="confirmButton"><button class="button-table" type="submit" @click="editTicket(index)">{{confirmButton}}</button></div>
+                        <div v-if="role == 'admin' && ticket.status != 'work done'" id="deleteButton"><button @click="deleteTicket(index)">Reject ticket</button></div>
+                        <div v-if="role == 'maintainer' && (ticket.status == 'assigned' || ticket.status == 'work in progress')" id="accepetWork"><button @click="editTicketMain(index)">Next phase status</button></div>
+                        <div v-if="role == 'admin' && ticket.status =='work done'" id="closeStatus"><button @click="closeButton(index)">Close ticket</button></div>
+                    </td>
+                
+                </tr>
+            </table>
 
             <button @click="logout" class="logout">Logout</button>
         </div>
