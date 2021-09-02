@@ -3,6 +3,11 @@ h3 {
     margin-top: 50px;
 }
 
+#confirmButton {
+    border-radius: 0 !important;
+    font-size: 20px !important;
+}
+
 button {
     margin: auto;
     display: block;
@@ -30,3 +35,4 @@ span {
 #registr {
     text-align: center;
 }
+

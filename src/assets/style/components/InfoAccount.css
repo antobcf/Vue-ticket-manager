@@ -64,6 +64,7 @@ tr:nth-child(even) {
 
 .new {
     margin: 0 auto;
+    margin-top: 15px;
     width: 150px;
     box-shadow: 0 2px #999;
 }
@@ -144,8 +145,24 @@ input[type=date]::-webkit-calendar-picker-indicator {
 }
 
 .button-table {
-    float: left;
-    
+    border-radius: 0;
+    width: 100px;
+}
+
+.delete-button {
+    border-radius: 0;
+    margin-top: 2px;
+    width: 100px;
+    background-color: #f55656;
+}
+
+.next-button {
+    border-radius: 0;
+}
+
+.close-button {
+    border-radius: 0;
+    width: 100px;
 }
 
 #ticket-table th,td {

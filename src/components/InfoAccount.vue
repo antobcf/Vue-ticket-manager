@@ -75,7 +75,6 @@
                     <th class="th-space">Status</th>
                     <th class="th-space">Maintainer</th>
                     <th class="th-space">Email maintainer</th>
-                    <th></th>
                 </tr>
                 <tr v-for="(ticket, index) in tickets" v-bind:key="ticket.ticket_id">
                     <td id="id-td">{{ticket.ticket_id}}</td>
@@ -101,9 +100,9 @@
                     </td>
                     <td>
                         <div v-if="role == 'admin' && ticket.status == 'pending confirmation'" id="confirmButton"><button class="button-table" type="submit" @click="editTicket(index)">{{confirmButton}}</button></div>
-                        <div v-if="role == 'admin' && ticket.status != 'work done'" id="deleteButton"><button @click="deleteTicket(index)">Reject ticket</button></div>
-                        <div v-if="role == 'maintainer' && (ticket.status == 'assigned' || ticket.status == 'work in progress')" id="accepetWork"><button @click="editTicketMain(index)">Next phase status</button></div>
-                        <div v-if="role == 'admin' && ticket.status =='work done'" id="closeStatus"><button @click="closeButton(index)">Close ticket</button></div>
+                        <div v-if="role == 'admin' && ticket.status != 'work done'" id="deleteButton"><button class="delete-button" @click="deleteTicket(index)">Reject ticket</button></div>
+                        <div v-if="role == 'maintainer' && (ticket.status == 'assigned' || ticket.status == 'work in progress')" id="accepetWork"><button class="next-button" @click="editTicketMain(index)">Next phase status</button></div>
+                        <div v-if="role == 'admin' && ticket.status =='work done'" id="closeStatus"><button class="close-button" @click="closeButton(index)">Close ticket</button></div>
                     </td>
                 
                 </tr>
